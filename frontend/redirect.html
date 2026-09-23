@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Weiterleitung</title>
+</head>
+
+<body>
+  <p id="redirect-status">Anmeldung wird verarbeitet...</p>
+
+  <script type="module">
+    import { browserStorage, readLanguage, translate } from "./src/i18n/i18n.ts";
+    import { broadcastResponseToMainFrame } from "@azure/msal-browser/redirect-bridge";
+
+    const language = readLanguage(browserStorage());
+    document.documentElement.lang = language;
+    document.title = translate(language, 'Redirect');
+    document.getElementById('redirect-status').textContent = translate(language, 'Processing authentication...');
+    broadcastResponseToMainFrame().catch(() => {
+      console.error("Authentication redirect could not be completed.");
+    });
+  </script>
+</body>
+</html>
